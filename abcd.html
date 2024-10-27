@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced English Learning Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #45B649;
+            --danger-color: #FF4B2B;
+            --text-color: #2C3E50;
+            --bg-color: #F7F9FC;
+            --hover-color: #5a9cf0;
+            --active-color: #3d7cc7;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .reading-section,
+        .vocabulary-section {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow-y: auto;
+        }
+
+        .section-header {
+            padding: 20px;
+            border-bottom: 2px solid #eef2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        #editor {
+            width: 100%;
+            border: none;
+            border-radius: 0;
+            padding: 25px;
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 400px;
+            max-height: 800px;
+            letter-spacing: 0.3px;
+            outline: none;
+            transition: all 0.2s ease;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+
+        }
+
+        #editor:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        .vocab-form {
+            background: linear-gradient(to bottom, #fff, #f8f9fa);
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .vocab-form:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            border: 2px solid #eef2f7;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            outline: none;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+        }
+
+        .btn-success {
+            background: var(--secondary-color);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .loading-spinner.active {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .vocab-list {
+            padding: 20px;
+        }
+
+        .vocab-item {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 15px 20px;
+            box-shadow: var(--card-shadow);
+            transform: translateY(0);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vocab-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .english-word {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .vietnamese-meaning {
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .floating-toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .formatting-button {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .formatting-button:hover {
+            background: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .search-container {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #eef2f7;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .reading-section,
+            .vocabulary-section {
+                flex: none;
+                height: auto;
+                max-height: 50vh;
+            }
+        }
+
+        .word-analysis {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .analysis-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .analysis-item {
+            margin-bottom: 12px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .word-type {
+            color: #666;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .example {
+            color: #495057;
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+
+        .pronunciation {
+            color: #20c997;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .context-analysis {
+            margin-top: 15px;
+            border-top: 1px solid #e9ecef;
+            padding-top: 15px;
+        }
+
+        .context-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0 3px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .context-section .analysis-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .context-section strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .context-section p {
+            margin: 5px 0;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .nearby-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .nearby-word {
+            padding: 3px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Thêm vào phần CSS */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-info {
+            background: var(--primary-color);
+        }
+
+        .notification-error {
+            background: var(--error-color);
+        }
+
+        .notification-warning {
+            background: var(--warning-color);
+            color: #000;
+        }
+
+        .notification-success {
+            background: var(--success-color);
+        }
+
+        .loading-trigger {
+            height: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Thêm skeleton loading */
+        .vocab-item.skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .context-section .analysis-item p {
+            margin: 10px 0;
+            line-height: 1.6;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .context-section .analysis-item strong {
+            display: block;
+            margin-top: 15px;
+            color: var(--primary-color);
+        }
+
+        #translated-context {
+            border-left: 3px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        /* Thêm vào phần style */
+        .word-list {
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .word-list strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .synonyms-section,
+        .antonyms-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .synonyms-section>strong,
+        .antonyms-section>strong {
+            color: var(--text-color);
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: block;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        #synonymsList,
+        #antonymsList {
+            padding-left: 15px;
+        }
+
+        .word-list:empty::after {
+            content: 'Không tìm thấy';
+            color: #666;
+            font-style: italic;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .button-group .btn {
+            padding: 8px;
+            min-width: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary .fa-search {
+            font-size: 0.9em;
+        }
+
+        /* Thêm vào phần style */
+        .passages-navigation {
+            padding: 15px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .nav-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .passage-select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #eef2f7;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .passage-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .passage-tab {
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border: 1px solid #eef2f7;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .passage-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .passage-tab .close-tab {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .passage-tab:hover .close-tab {
+            opacity: 1;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Animate tab transitions */
+        .passage-tab {
+            transition: all 0.3s ease;
+        }
+
+        .passage-tab.animate__fadeIn {
+            animation-duration: 0.5s;
+        }
+
+        #floating-note-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #floating-note-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .note-modal {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+        }
+
+        .note-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .note-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .note-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .note-controls button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .note-controls button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        #note-textarea {
+            width: 100%;
+            height: 250px;
+            padding: 15px;
+            border: none;
+            resize: none;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: 0 0 12px 12px;
+        }
+
+        #note-textarea:focus {
+            outline: none;
+        }
+
+        .note-modal.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            display: none;
+            position: relative;
+            height: 20px;
+            width: 20px;
+            border: 2px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 2px solid #3498db;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .button-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reset-button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 65, 108, 0.3);
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+        }
+
+        .reset-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            to {
+                transform: rotate(45deg) translate(100%, 100%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Reading Section -->
+        <div class="reading-section">
+            <div class="nav-header">
+                <select id="passageSelect" class="passage-select">
+                    <option value="">Select Passage...</option>
+                </select>
+                <button class="btn btn-primary" onclick="addNewPassage()">
+                    <i class="fas fa-plus"></i> New Passage
+                </button>
+            </div>
+            <div class="passage-tabs" id="passageTabs">
+                <!-- Tabs sẽ được thêm động -->
+            </div>
+            <div class="section-header">
+                <h2 class="section-title">Reading Section</h2>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="saveContent()">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-danger" onclick="clearEditor()">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div id="editor" contenteditable="true" spellcheck="false">
+                Tạo 1 passage mới để tránh mất dữ liệu...
+            </div>
+        </div>
+
+        <div id="passageModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Passage Information</h2>
+                <div class="input-group">
+                    <label for="passageTitle">Title:</label>
+                    <input type="text" id="passageTitle" placeholder="Enter passage title">
+                </div>
+                <div class="input-group">
+                    <label for="passageDescription">Description:</label>
+                    <textarea id="passageDescription" placeholder="Enter passage description"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="savePassageInfo()">Save</button>
+            </div>
+        </div>
+
+        <!-- Vocabulary Section -->
+        <div class="vocabulary-section">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search vocabulary...">
+                    <button class="btn btn-primary" onclick="clearSearch()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="vocab-form">
+                <h3>Look up information</h3>
+                <div class="input-group">
+                    <label for="englishWord">Vocabulary</label>
+                    <input type="text" id="englishWord" placeholder="Nhập từ tiếng anh...">
+                </div>
+
+                <!-- Thêm phần hiển thị phân tích -->
+                <div id="wordAnalysis" class="word-analysis" style="display:none;">
+                    <div class="analysis-section">
+                        <h4>Word Analysis</h4>
+                        <div id="wordBasics" class="analysis-item"></div>
+                        <div id="pronunciation" class="analysis-item"></div>
+                        <div id="wordForms" class="analysis-item"></div>
+                        <div id="examples" class="analysis-item"></div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="vietnameseMeaning">Content note</label>
+                    <textarea id="vietnameseMeaning" placeholder="Tóm tắt nội dung..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="translateWord()" id="translateBtn">
+                        <i class="fas fa-chart-pie"></i> Translate
+                        <i class="fas fa-spinner loading-spinner"></i>
+                    </button>
+                    <button class="btn btn-success" onclick="addVocabulary()">
+                        <i class="fas fa-cloud-upload-alt"></i> Save Word
+                    </button>
+                    <button id="resetBtn" class="reset-button">Reset</button>
+                </div>
+            </div>
+
+            <div id="vocabList" class="vocab-list"></div>
+        </div>
+    </div>
+
+    <!-- Floating Toolbar -->
+    <div class="floating-toolbar">
+        <button class="formatting-button" onclick="applyFormat('bold')" title="Bold (Ctrl+B)">
+            <i class="fas fa-bold"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('italic')" title="Italic (Ctrl+I)">
+            <i class="fas fa-italic"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('underline')" title="Underline (Ctrl+U)">
+            <i class="fas fa-underline"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('backColor', 'yellow')" title="Highlight">
+            <i class="fas fa-highlighter"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('backColor', 'transparent')" title="Remove Highlight">
+            <i class="fas fa-eraser"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('fontSize', '1')" title="Decrease Font Size">
+            <i class="fas fa-text-height fa-xs"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('fontSize', '3')" title="Normal Font Size">
+            <i class="fas fa-text-height"></i>
+        </button>
+        <button class="formatting-button" onclick="applyFormat('fontSize', '5')" title="Increase Font Size">
+            <i class="fas fa-text-height fa-lg"></i>
+        </button>
+        <button class="formatting-button" onclick="undo()" title="Undo (Ctrl+Z)">
+            <i class="fas fa-undo"></i>
+        </button>
+        <button class="formatting-button" onclick="redo()" title="Redo (Ctrl+Y)">
+            <i class="fas fa-redo"></i>
+        </button>
+    </div>
+    <div id="floating-note-button">
+        <i class="fas fa-sticky-note"></i>
+    </div>
+
+    <div id="note-modal" class="note-modal">
+        <div class="note-content">
+            <div class="note-header">
+                <span class="note-title">Quick Note</span>
+                <div class="note-controls">
+                    <button class="note-save-btn">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <button class="note-close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <textarea id="note-textarea" spellcheck="false" placeholder="Write your notes here..."></textarea>
+        </div>
+    </div>
+    <script>
+        // Initialize variables
+        let vocabulary = [];
+        let undoStack = [];
+        let redoStack = [];
+        let editor = document.getElementById('editor');
+        let contentChanged = false;
+        let passages = [];
+        let currentPassageId = null;
+        const translationCache = new Map();
+        const contextTranslationCache = new Map();
+        const modal = document.getElementById('passageModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Editor initialization and event listeners
+        editor.addEventListener('input', debounce(function () {
+            contentChanged = true;
+            saveState();
+        }, 300));
+
+        editor.addEventListener('focus', function () {
+            if (this.textContent === 'Start typing or paste your text here...') {
+                this.textContent = '';
+            }
+        });
+
+        // Format functions
+        function applyFormat(command, value = null) {
+            document.execCommand(command, false, value);
+            editor.focus();
+        }
+
+        // Save and load functions
+        async function saveContent() {
+            if (!editor.textContent || editor.textContent === 'Start typing or paste your text here...') {
+                showNotification('Please enter some content before saving.', 'warning');
+                return;
+            }
+
+            try {
+                localStorage.setItem('savedContent', editor.innerHTML);
+                contentChanged = false;
+                showNotification('Content saved successfully!', 'success');
+
+                // Animation feedback
+                const saveBtn = document.querySelector('.btn-success');
+                saveBtn.classList.add('animate__animated', 'animate__bounce');
+                setTimeout(() => {
+                    saveBtn.classList.remove('animate__animated', 'animate__bounce');
+                }, 1000);
+            } catch (error) {
+                showNotification('Error saving content. Please try again.', 'error');
+                console.error('Save error:', error);
+            }
+        }
+
+        // Translation and analysis functions
+        async function translateWord() {
+            const englishWord = document.getElementById('englishWord').value.trim();
+            if (!englishWord) {
+                showNotification('Please enter a word to translate', 'warning');
+                return;
+            }
+
+            const translateBtn = document.getElementById('translateBtn');
+            const spinner = translateBtn.querySelector('.loading-spinner');
+
+            try {
+                spinner.classList.add('active');
+                translateBtn.disabled = true;
+
+                // Gọi các API song song
+                const [translateResponse, analysisResponse] = await Promise.all([
+                    fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(englishWord)}&langpair=en|vi`),
+                    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${englishWord}`)
+                ]);
+
+                const [translateData, analysisData] = await Promise.all([
+                    translateResponse.json(),
+                    analysisResponse.json()
+                ]);
+
+                // Process context
+                const contextInfo = getWordContext(englishWord);
+
+                // Combine results
+                const result = {
+                    translation: translateData?.responseData?.translatedText,
+                    analysis: analysisData[0],
+                    context: contextInfo
+                };
+
+                // Cache result
+                translationCache.set(englishWord, result);
+
+                // Update UI
+                updateTranslationUI(result);
+
+                // Thêm phần gọi từ đồng nghĩa và trái nghĩa
+                await displaySynonymsAntonyms(englishWord);
+
+                showNotification('Translation completed', 'success');
+
+            } catch (error) {
+                showNotification('Translation failed. Please try again.', 'error');
+                console.error('Translation error:', error);
+            } finally {
+                spinner.classList.remove('active');
+                translateBtn.disabled = false;
+            }
+        }
+
+
+        // Thêm các hàm hỗ trợ dịch
+        function translatePartOfSpeech(pos) {
+            const dictionary = {
+                'noun': 'danh từ',
+                'verb': 'động từ',
+                'adjective': 'tính từ',
+                'adverb': 'trạng từ',
+                'pronoun': 'đại từ',
+                'preposition': 'giới từ',
+                'conjunction': 'liên từ',
+                'interjection': 'thán từ'
+            };
+            return dictionary[pos] || pos;
+        }
+
+        async function translateDefinition(definition) {
+            try {
+                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(definition)}&langpair=en|vi`);
+                const data = await response.json();
+                return data.responseData.translatedText;
+            } catch (error) {
+                console.error('Translation error:', error);
+                return definition; // Trả về định nghĩa gốc nếu không dịch được
+            }
+        }
+
+        // UI Update functions
+        async function updateTranslationUI(result) {
+            document.getElementById('vietnameseMeaning').value = result.translation;
+
+            const wordAnalysis = document.getElementById('wordAnalysis');
+            wordAnalysis.innerHTML = '';
+
+            if (result.analysis) {
+                // Word basics
+                const basics = document.createElement('div');
+                basics.className = 'analysis-item';
+                basics.innerHTML = `
+            <strong>Từ:</strong> ${result.analysis.word}<br>
+            <span class="word-type">Từ loại: ${result.analysis.meanings.map(m => translatePartOfSpeech(m.partOfSpeech)).join(', ')}</span>
+        `;
+                wordAnalysis.appendChild(basics);
+
+                // Pronunciation
+                if (result.analysis.phonetics?.length) {
+                    const pronunciation = document.createElement('div');
+                    pronunciation.className = 'analysis-item';
+                    pronunciation.innerHTML = `
+                <span class="pronunciation">Phát âm: ${result.analysis.phonetics[0].text || ''}</span>
+                ${result.analysis.phonetics[0].audio ? `<br><audio controls src="${result.analysis.phonetics[0].audio}"></audio>` : ''}
+            `;
+                    wordAnalysis.appendChild(pronunciation);
+                }
+
+                // Definitions
+                const definitions = document.createElement('div');
+                definitions.className = 'analysis-item';
+
+                // Tạo mảng promises cho việc dịch định nghĩa
+                const definitionPromises = result.analysis.meanings.map(async meaning => {
+                    const translatedDef = await translateDefinition(meaning.definitions[0].definition);
+                    return `
+                <div class="word-form">
+                    <em>${translatePartOfSpeech(meaning.partOfSpeech)}</em>: ${translatedDef}
+                </div>
+            `;
+                });
+
+                // Đợi tất cả định nghĩa được dịch xong
+                const translatedDefinitions = await Promise.all(definitionPromises);
+
+                definitions.innerHTML = `
+            <strong>Định nghĩa:</strong><br>
+            ${translatedDefinitions.join('')}
+        `;
+                wordAnalysis.appendChild(definitions);
+
+                // Examples
+                const examples = result.analysis.meanings
+                    .filter(meaning => meaning.definitions[0].example)
+                    .map(meaning => meaning.definitions[0].example);
+
+                if (examples.length) {
+                    const examplesDiv = document.createElement('div');
+                    examplesDiv.className = 'analysis-item';
+                    examplesDiv.innerHTML = `
+                <strong>Ví dụ:</strong><br>
+                ${examples.map(example => `<div class="example">• ${example}</div>`).join('')}
+            `;
+                    wordAnalysis.appendChild(examplesDiv);
+                }
+
+                // Synonyms & Antonyms section
+                const synonymsAntonyms = document.createElement('div');
+                synonymsAntonyms.className = 'analysis-item';
+                synonymsAntonyms.innerHTML = `
+            <div class="synonyms-section">
+                <strong>Từ đồng nghĩa:</strong>
+                <div id="synonymsList">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                </div>
+            </div>
+            <div class="antonyms-section">
+                <strong>Từ trái nghĩa:</strong>
+                <div id="antonymsList">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                </div>
+            </div>
+        `;
+                wordAnalysis.appendChild(synonymsAntonyms);
+
+                // Hiển thị các từ đồng nghĩa và trái nghĩa đã lưu nếu có
+                if (result.synonymsAntonyms) {
+                    const { synonyms, antonyms } = result.synonymsAntonyms;
+                    displaySavedSynonymsAntonyms(synonyms, antonyms);
+                } else {
+                    // Nếu chưa có, gọi API để lấy mới
+                    displaySynonymsAntonyms(result.analysis.word);
+                }
+            }
+
+            // Hiển thị context nếu có
+            if (result.context) {
+                showContextAnalysis(result.context);
+            }
+
+            wordAnalysis.style.display = 'block';
+        }
+        function displaySavedSynonymsAntonyms(synonyms, antonyms) {
+            if (synonyms) {
+                const synonymsHTML = synonyms.map(item =>
+                    `<strong>${item.english}</strong>: ${item.vietnamese}`
+                ).join('<br>');
+
+                document.getElementById('synonymsList').innerHTML = `
+            <div class="word-list">
+                ${synonymsHTML || 'Không tìm thấy từ đồng nghĩa'}
+            </div>
+        `;
+            }
+
+            if (antonyms) {
+                const antonymsHTML = antonyms.map(item =>
+                    `<strong>${item.english}</strong>: ${item.vietnamese}`
+                ).join('<br>');
+
+                document.getElementById('antonymsList').innerHTML = `
+            <div class="word-list">
+                ${antonymsHTML || 'Không tìm thấy từ trái nghĩa'}
+            </div>
+        `;
+            }
+        }
+
+        // Thêm các hàm mới
+        async function getSynonymsAndAntonyms(word) {
+            try {
+                // Lấy từ đồng nghĩa
+                const synResponse = await fetch(`https://api.datamuse.com/words?rel_syn=${word}`);
+                const synonyms = await synResponse.json();
+
+                // Lấy từ trái nghĩa
+                const antResponse = await fetch(`https://api.datamuse.com/words?rel_ant=${word}`);
+                const antonyms = await antResponse.json();
+
+                return {
+                    synonyms: synonyms.slice(0, 5), // Lấy 5 từ đồng nghĩa
+                    antonyms: antonyms.slice(0, 5)  // Lấy 5 từ trái nghĩa
+                };
+            } catch (error) {
+                console.error('Error fetching synonyms/antonyms:', error);
+                return { synonyms: [], antonyms: [] };
+            }
+        }
+
+        // Hàm dịch danh sách từ
+        async function translateWordList(words) {
+            const translations = [];
+            for (const word of words) {
+                try {
+                    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word.word)}&langpair=en|vi`);
+                    const data = await response.json();
+                    translations.push({
+                        english: word.word,
+                        vietnamese: data.responseData.translatedText
+                    });
+                } catch (error) {
+                    translations.push({
+                        english: word.word,
+                        vietnamese: '(Không thể dịch)'
+                    });
+                }
+            }
+            return translations;
+        }
+
+        // Hàm hiển thị kết quả
+        async function displaySynonymsAntonyms(word) {
+            const result = await getSynonymsAndAntonyms(word);
+
+            // Dịch từ đồng nghĩa
+            const translatedSynonyms = await translateWordList(result.synonyms);
+            const synonymsHTML = translatedSynonyms.map(item =>
+                `<strong>${item.english}</strong>: ${item.vietnamese}`
+            ).join('<br>');
+
+            // Dịch từ trái nghĩa
+            const translatedAntonyms = await translateWordList(result.antonyms);
+            const antonymsHTML = translatedAntonyms.map(item =>
+                `<strong>${item.english}</strong>: ${item.vietnamese}`
+            ).join('<br>');
+
+            // Cập nhật UI với thêm phần formatting
+            document.getElementById('synonymsList').innerHTML = `
+        <div class="word-list">
+            ${synonymsHTML || 'Không tìm thấy từ đồng nghĩa'}
+        </div>
+    `;
+
+            document.getElementById('antonymsList').innerHTML = `
+        <div class="word-list">
+            ${antonymsHTML || 'Không tìm thấy từ trái nghĩa'}
+        </div>
+    `;
+        }
+
+
+        // Vocabulary management functions
+        function displayVocabulary(searchTerm = '') {
+            const vocabList = document.getElementById('vocabList');
+            vocabList.innerHTML = '';
+            const pageSize = 20;
+            let currentPage = 0;
+
+            const filteredVocab = vocabulary
+                .sort((a, b) => b.timestamp - a.timestamp)
+                .filter(word => {
+                    if (!searchTerm) return true;
+                    const searchLower = searchTerm.toLowerCase();
+                    return word.english.toLowerCase().includes(searchLower) ||
+                        word.vietnamese.toLowerCase().includes(searchLower);
+                });
+
+            function createVocabElement(word) {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'vocab-item animate__animated animate__fadeIn';
+                wordElement.innerHTML = `
+                    <div class="word-info">
+                        <div class="english-word">${word.english}</div>
+                        <div class="vietnamese-meaning">${word.vietnamese}</div>
+                    </div>
+                    <div class="button-group">
+                        <button onclick="lookupWord('${word.english}')" class="btn btn-primary" title="Lookup">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button onclick="editVocabulary(${vocabulary.indexOf(word)})" class="btn btn-primary" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteVocabulary(${vocabulary.indexOf(word)})" class="btn btn-danger" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                return wordElement;
+            }
+
+            function loadMoreItems() {
+                const start = currentPage * pageSize;
+                const items = filteredVocab.slice(start, start + pageSize);
+
+                items.forEach(word => {
+                    const wordElement = createVocabElement(word);
+                    vocabList.appendChild(wordElement);
+                });
+
+                currentPage++;
+
+                if (start + pageSize >= filteredVocab.length) {
+                    observer.unobserve(loadingTrigger);
+                }
+            }
+
+            // Intersection Observer setup
+            const loadingTrigger = document.createElement('div');
+            loadingTrigger.className = 'loading-trigger';
+            vocabList.appendChild(loadingTrigger);
+
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    loadMoreItems();
+                }
+            });
+
+            observer.observe(loadingTrigger);
+
+            if (filteredVocab.length === 0) {
+                vocabList.innerHTML = `
+            <div class="no-results animate__animated animate__fadeIn">
+                ${searchTerm ? 'No matching words found.' : 'No vocabulary words added yet.'}
+            </div>
+        `;
+            }
+        }
+
+        async function addVocabulary() {
+            const englishWord = document.getElementById('englishWord').value.trim();
+            const vietnameseMeaning = document.getElementById('vietnameseMeaning').value.trim();
+
+            if (!englishWord || !vietnameseMeaning) {
+                showNotification('Please enter both English word and Vietnamese meaning.', 'warning');
+                return;
+            }
+
+            // Lấy phân tích hiện tại từ cache
+            const analysis = translationCache.get(englishWord);
+
+            // Lấy kết quả synonyms và antonyms
+            const synAnt = await getSynonymsAndAntonyms(englishWord);
+            const translatedSynonyms = await translateWordList(synAnt.synonyms);
+            const translatedAntonyms = await translateWordList(synAnt.antonyms);
+
+            vocabulary.push({
+                english: englishWord,
+                vietnamese: vietnameseMeaning,
+                timestamp: new Date().getTime(),
+                analysis: {
+                    ...analysis,
+                    synonymsAntonyms: {
+                        synonyms: translatedSynonyms,
+                        antonyms: translatedAntonyms
+                    }
+                }
+            });
+
+            document.getElementById('englishWord').value = '';
+            document.getElementById('vietnameseMeaning').value = '';
+            document.getElementById('wordAnalysis').style.display = 'none';
+
+            displayVocabulary();
+            saveVocabulary();
+            showNotification('Word added successfully!', 'success');
+        }
+        async function lookupWord(word) {
+            // Tìm từ trong vocabulary
+            const vocabEntry = vocabulary.find(v => v.english === word);
+
+            if (vocabEntry && vocabEntry.analysis) {
+                // Nếu có sẵn phân tích, hiển thị ngay
+                document.getElementById('englishWord').value = word;
+                updateTranslationUI(vocabEntry.analysis);
+
+                // Scroll to analysis
+                document.querySelector('.vocab-form').scrollIntoView({ behavior: 'smooth' });
+
+                showNotification('Loaded saved analysis', 'success');
+            } else {
+                // Nếu chưa có phân tích, thực hiện tra cứu mới
+                document.getElementById('englishWord').value = word;
+                showNotification('Looking up word...', 'info');
+
+                try {
+                    await translateWord();
+
+                    // Lấy và lưu từ đồng nghĩa và trái nghĩa
+                    const synAnt = await getSynonymsAndAntonyms(word);
+                    const translatedSynonyms = await translateWordList(synAnt.synonyms);
+                    const translatedAntonyms = await translateWordList(synAnt.antonyms);
+
+                    // Cập nhật phân tích vào vocabulary
+                    const newAnalysis = translationCache.get(word);
+                    newAnalysis.synonymsAntonyms = {
+                        synonyms: translatedSynonyms,
+                        antonyms: translatedAntonyms
+                    };
+
+                    const index = vocabulary.findIndex(v => v.english === word);
+                    if (index !== -1) {
+                        vocabulary[index].analysis = newAnalysis;
+                        saveVocabulary();
+                    }
+                } catch (error) {
+                    showNotification('Error looking up word', 'error');
+                    console.error('Lookup error:', error);
+                }
+            }
+        }
+
+        // Context analysis functions
+        function getWordContext(selectedWord) {
+            const editorContent = editor.innerText;
+            const sentences = editorContent.match(/[^.!?]+[.!?]+/g) || [];
+
+            let contextInfo = {
+                word: selectedWord,
+                sentenceContext: '',
+                nearbyWords: [],
+                frequency: 0,
+                paragraphContext: ''
+            };
+
+            for (let sentence of sentences) {
+                if (sentence.toLowerCase().includes(selectedWord.toLowerCase())) {
+                    contextInfo.sentenceContext = sentence.trim();
+
+                    const paragraphRegex = new RegExp(`.{0,100}${sentence.trim()}.{0,100}`, 'gi');
+                    const paragraphMatch = editorContent.match(paragraphRegex);
+                    if (paragraphMatch) {
+                        contextInfo.paragraphContext = paragraphMatch[0];
+                    }
+
+                    const wordRegex = new RegExp(`\\b${selectedWord}\\b`, 'gi');
+                    contextInfo.frequency = (editorContent.match(wordRegex) || []).length;
+
+                    const words = sentence.split(/\s+/);
+                    const wordIndex = words.findIndex(w =>
+                        w.toLowerCase().includes(selectedWord.toLowerCase())
+                    );
+                    if (wordIndex !== -1) {
+                        const start = Math.max(0, wordIndex - 3);
+                        const end = Math.min(words.length, wordIndex + 4);
+                        contextInfo.nearbyWords = words.slice(start, end);
+                    }
+
+                    break;
+                }
+            }
+
+            return contextInfo;
+        }
+
+        async function translateContext(text) {
+            // Kiểm tra cache trước
+            if (contextTranslationCache.has(text)) {
+                return contextTranslationCache.get(text);
+            }
+
+            try {
+                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|vi`);
+                const data = await response.json();
+                const translation = data.responseData.translatedText;
+
+                // Lưu vào cache
+                contextTranslationCache.set(text, translation);
+
+                return translation;
+            } catch (error) {
+                console.error('Translation error:', error);
+                showNotification('Error translating context', 'error');
+                return text;
+            }
+        }
+        function showContextAnalysis(contextInfo) {
+            const contextAnalysisDiv = document.createElement('div');
+            contextAnalysisDiv.className = 'context-analysis';
+            contextAnalysisDiv.innerHTML = `
+        <div class="context-section">
+            <h4>Ngữ cảnh trong đoạn văn</h4>
+            
+            <div class="analysis-item">
+                <strong>Ngữ cảnh (English)</strong>
+                <p>${highlightWord(contextInfo.sentenceContext, contextInfo.word)}</p>
+                
+                <strong>Ngữ cảnh (Tiếng Việt)</strong>
+                <p id="translated-context">
+                    <i class="fas fa-spinner fa-spin"></i> Đang dịch...
+                </p>
+            </div>
+        </div>
+    `;
+
+            const wordAnalysis = document.getElementById('wordAnalysis');
+            const existingContext = wordAnalysis.querySelector('.context-analysis');
+            if (existingContext) {
+                existingContext.remove();
+            }
+            wordAnalysis.appendChild(contextAnalysisDiv);
+
+            // Thực hiện dịch ngữ cảnh
+            translateContext(contextInfo.sentenceContext).then(translatedText => {
+                const translatedContextElement = document.getElementById('translated-context');
+                if (translatedContextElement) {
+                    translatedContextElement.innerHTML = translatedText;
+                }
+
+            });
+
+        }
+
+        // Utility functions
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type} animate__animated animate__fadeIn`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.remove('animate__fadeIn');
+                notification.classList.add('animate__fadeOut');
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        function highlightWord(text, word) {
+            const regex = new RegExp(`(${word})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // State management functions
+        function saveState() {
+            undoStack.push(editor.innerHTML);
+            redoStack = [];
+            if (undoStack.length > 50) undoStack.shift();
+        }
+
+        function undo() {
+            if (undoStack.length > 1) {
+                redoStack.push(undoStack.pop());
+                editor.innerHTML = undoStack[undoStack.length - 1];
+            }
+            editor.focus();
+        }
+
+        function redo() {
+            if (redoStack.length > 0) {
+                undoStack.push(redoStack[redoStack.length - 1]);
+                editor.innerHTML = redoStack.pop();
+            }
+            editor.focus();
+        }
+
+        // Storage functions
+        function saveVocabulary() {
+            try {
+                const vocabularyData = vocabulary.map(word => ({
+                    ...word,
+                    analysis: word.analysis || null
+                }));
+                localStorage.setItem('vocabulary', JSON.stringify(vocabularyData));
+            } catch (error) {
+                console.error('Error saving vocabulary:', error);
+                showNotification('Error saving vocabulary', 'error');
+            }
+        }
+
+        async function loadVocabulary() {
+            try {
+                const saved = localStorage.getItem('vocabulary');
+                if (saved) {
+                    vocabulary = JSON.parse(saved);
+                    // Khôi phục cache từ dữ liệu đã lưu
+                    vocabulary.forEach(word => {
+                        if (word.analysis) {
+                            translationCache.set(word.english, word.analysis);
+                        }
+                    });
+                    displayVocabulary();
+                }
+            } catch (error) {
+                console.error('Error loading vocabulary:', error);
+                showNotification('Error loading vocabulary', 'error');
+            }
+        }
+
+        function loadSavedContent() {
+            try {
+                const savedContent = localStorage.getItem('savedContent');
+                if (savedContent && savedContent !== 'Start typing or paste your text here...') {
+                    editor.innerHTML = savedContent;
+                }
+            } catch (error) {
+                console.error('Error loading content:', error);
+                showNotification('Error loading content', 'error');
+            }
+        }
+
+        // Event listeners
+        // Tiếp tục phần event listeners
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        applyFormat('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        applyFormat('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        applyFormat('underline');
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        applyFormat('backColor', 'yellow');
+                        break;
+                    case 'z':
+                        e.preventDefault();
+                        if (e.shiftKey) {
+                            redo();
+                        } else {
+                            undo();
+                        }
+                        break;
+                    case 'y':
+                        e.preventDefault();
+                        redo();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        saveContent();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        document.getElementById('searchInput').focus();
+                        break;
+                }
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', debounce(function (e) {
+            const searchTerm = e.target.value.trim();
+            displayVocabulary(searchTerm);
+        }, 300));
+
+        function clearSearch() {
+            searchInput.value = '';
+            displayVocabulary();
+            searchInput.focus();
+        }
+
+        // Editor selection handling
+        editor.addEventListener('mouseup', debounce(function () {
+            const selectedText = window.getSelection().toString().trim();
+            if (selectedText) {
+                const contextInfo = getWordContext(selectedText);
+                if (contextInfo) {
+                    document.getElementById('englishWord').value = selectedText;
+                    showContextAnalysis(contextInfo);
+                }
+            }
+        }, 300));
+
+        // Vocabulary editing functions
+        function editVocabulary(index) {
+            const word = vocabulary[index];
+            document.getElementById('englishWord').value = word.english;
+            document.getElementById('vietnameseMeaning').value = word.vietnamese;
+            vocabulary.splice(index, 1);
+            displayVocabulary(document.getElementById('searchInput').value.trim());
+            saveVocabulary();
+
+            // Scroll and highlight feedback
+            const form = document.querySelector('.vocab-form');
+            form.scrollIntoView({ behavior: 'smooth' });
+            form.classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                form.classList.remove('animate__animated', 'animate__pulse');
+            }, 1000);
+        }
+
+        function deleteVocabulary(index) {
+            if (confirm('Are you sure you want to delete this word?')) {
+                vocabulary.splice(index, 1);
+                displayVocabulary(document.getElementById('searchInput').value.trim());
+                saveVocabulary();
+                showNotification('Word deleted successfully', 'success');
+            }
+        }
+
+        // Clear editor function
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear all text? This action cannot be undone.')) {
+                editor.innerHTML = '';
+                saveState();
+                contentChanged = false;
+                showNotification('Editor cleared', 'info');
+            }
+        }
+
+        // Page leave warning
+        window.addEventListener('beforeunload', function (e) {
+            if (contentChanged) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+
+        // Initialize application
+        async function initializeApp() {
+            try {
+                // Show loading state
+                const loadingElement = document.createElement('div');
+                loadingElement.className = 'loading-overlay';
+                loadingElement.innerHTML = `
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
+        `;
+                document.body.appendChild(loadingElement);
+
+                // Load data
+                await Promise.all([
+                    loadVocabulary(),
+                    loadSavedContent()
+                ]);
+
+                saveState();
+                contentChanged = false;
+
+                // Setup autosave
+                setInterval(() => {
+                    if (contentChanged) {
+                        saveContent();
+                    }
+                }, 60000); // Autosave every minute if there are changes
+
+                // Remove loading overlay
+                loadingElement.classList.add('fade-out');
+                setTimeout(() => loadingElement.remove(), 500);
+
+                showNotification('Application loaded successfully', 'success');
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showNotification('Error initializing application', 'error');
+            }
+        }
+
+        // Text analysis functions
+        function analyzeText() {
+            const text = editor.innerText;
+            const words = text.split(/\s+/).filter(word => word.length > 0);
+            const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+
+            const analysis = {
+                wordCount: words.length,
+                sentenceCount: sentences.length,
+                averageWordLength: words.reduce((sum, word) => sum + word.length, 0) / words.length,
+                uniqueWords: new Set(words.map(w => w.toLowerCase())).size
+            };
+
+            showTextAnalysis(analysis);
+        }
+
+        function showTextAnalysis(analysis) {
+            const analysisDiv = document.createElement('div');
+            analysisDiv.className = 'text-analysis-popup animate__animated animate__fadeIn';
+            analysisDiv.innerHTML = `
+        <h3>Text Analysis</h3>
+        <div class="analysis-content">
+            <p>Word Count: ${analysis.wordCount}</p>
+            <p>Sentence Count: ${analysis.sentenceCount}</p>
+            <p>Average Word Length: ${analysis.averageWordLength.toFixed(1)}</p>
+            <p>Unique Words: ${analysis.uniqueWords}</p>
+        </div>
+        <button class="btn btn-primary" onclick="this.parentElement.remove()">Close</button>
+    `;
+            document.body.appendChild(analysisDiv);
+        }
+
+        // Performance optimization
+        function optimizePerformance() {
+            // Cleanup old cache entries
+            const MAX_CACHE_SIZE = 100;
+            if (translationCache.size > MAX_CACHE_SIZE) {
+                const entries = Array.from(translationCache.entries());
+                const oldestEntries = entries.slice(0, entries.length - MAX_CACHE_SIZE);
+                oldestEntries.forEach(([key]) => translationCache.delete(key));
+            }
+
+            // Cleanup undo/redo stacks
+            if (undoStack.length > 50) {
+                undoStack = undoStack.slice(-50);
+            }
+            if (redoStack.length > 50) {
+                redoStack = redoStack.slice(-50);
+            }
+        }
+
+        // Call initialize on window load
+        window.addEventListener('load', initializeApp);
+
+        // Periodic performance optimization
+        setInterval(optimizePerformance, 300000); // Run every 5 minutes
+
+        // Khởi tạo cấu trúc passage
+        class Passage {
+            constructor(title, description = '') {
+                this.id = Date.now().toString();
+                this.title = title;
+                this.description = description;
+                this.content = '';
+                this.timestamp = new Date();
+            }
+        }
+
+        // Thêm passage mới
+        function addNewPassage() {
+            const modal = document.getElementById('passageModal');
+            modal.style.display = 'block';
+            document.getElementById('passageTitle').value = '';
+            document.getElementById('passageDescription').value = '';
+        }
+
+        // Lưu thông tin passage
+        function savePassageInfo() {
+            const title = document.getElementById('passageTitle').value.trim();
+            const description = document.getElementById('passageDescription').value.trim();
+
+            if (!title) {
+                showNotification('Please enter a title', 'warning');
+                return;
+            }
+
+            const passage = new Passage(title, description);
+            passages.push(passage);
+            currentPassageId = passage.id;
+
+            updatePassageUI();
+            savePassages();
+
+            document.getElementById('passageModal').style.display = 'none';
+            showNotification('Passage created successfully', 'success');
+        }
+
+        // Cập nhật UI
+        function updatePassageUI() {
+            const tabsContainer = document.getElementById('passageTabs');
+            const select = document.getElementById('passageSelect');
+
+            // Cập nhật tabs
+            tabsContainer.innerHTML = '';
+            select.innerHTML = '<option value="">Select Passage...</option>';
+
+            passages.forEach(passage => {
+                // Tạo tab
+                const tab = document.createElement('div');
+                tab.className = `passage-tab ${passage.id === currentPassageId ? 'active' : ''} animate__animated animate__fadeIn`;
+                tab.innerHTML = `
+            ${passage.title}
+            <span class="close-tab" onclick="removePassage('${passage.id}', event)">&times;</span>
+        `;
+                tab.onclick = () => switchPassage(passage.id);
+                tabsContainer.appendChild(tab);
+
+                // Thêm vào select
+                const option = document.createElement('option');
+                option.value = passage.id;
+                option.text = passage.title;
+                option.selected = passage.id === currentPassageId;
+                select.appendChild(option);
+            });
+
+            // Cập nhật nội dung editor
+            const currentPassage = passages.find(p => p.id === currentPassageId);
+            if (currentPassage) {
+                editor.innerHTML = currentPassage.content;
+            } else {
+                editor.innerHTML = '';
+            }
+        }
+
+        // Chuyển đổi passage
+        function switchPassage(passageId) {
+            // Lưu nội dung passage hiện tại
+            if (currentPassageId) {
+                const currentPassage = passages.find(p => p.id === currentPassageId);
+                if (currentPassage) {
+                    currentPassage.content = editor.innerHTML;
+                }
+            }
+
+            currentPassageId = passageId;
+            updatePassageUI();
+        }
+
+        // Xóa passage
+        function removePassage(passageId, event) {
+            event.stopPropagation();
+            if (!confirm('Are you sure you want to delete this passage?')) return;
+
+            passages = passages.filter(p => p.id !== passageId);
+            if (currentPassageId === passageId) {
+                currentPassageId = passages.length > 0 ? passages[0].id : null;
+            }
+
+            updatePassageUI();
+            savePassages();
+            showNotification('Passage deleted successfully', 'success');
+        }
+
+        // Lưu passages vào localStorage
+        function savePassages() {
+            // Lưu nội dung hiện tại trước
+            if (currentPassageId) {
+                const currentPassage = passages.find(p => p.id === currentPassageId);
+                if (currentPassage) {
+                    currentPassage.content = editor.innerHTML;
+                }
+            }
+
+            localStorage.setItem('passages', JSON.stringify(passages));
+        }
+
+        // Load passages từ localStorage
+        function loadPassages() {
+            const saved = localStorage.getItem('passages');
+            if (saved) {
+                passages = JSON.parse(saved);
+                if (passages.length > 0) {
+                    currentPassageId = passages[0].id;
+                }
+                updatePassageUI();
+            }
+        }
+
+        // Thêm vào hàm initializeApp
+        async function initializeApp() {
+            try {
+                await Promise.all([
+                    loadVocabulary(),
+                    loadPassages(),  // Thêm dòng này
+                    loadSavedContent()
+                ]);
+                // ... phần còn lại của hàm
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showNotification('Error initializing application', 'error');
+            }
+        }
+
+        // Cập nhật event listener cho editor
+        editor.addEventListener('input', debounce(function () {
+            if (currentPassageId) {
+                const currentPassage = passages.find(p => p.id === currentPassageId);
+                if (currentPassage) {
+                    currentPassage.content = editor.innerHTML;
+                    savePassages();
+                }
+            }
+            contentChanged = true;
+        }, 300));
+
+        closeBtn.onclick = function () {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const floatingButton = document.getElementById('floating-note-button');
+            const noteModal = document.getElementById('note-modal');
+            const noteTextarea = document.getElementById('note-textarea');
+            const saveButton = document.querySelector('.note-save-btn');
+            const closeButton = document.querySelector('.note-close-btn');
+
+            // Load saved note
+            noteTextarea.value = localStorage.getItem('quickNote') || '';
+
+            // Toggle note modal
+            floatingButton.addEventListener('click', function () {
+                noteModal.classList.toggle('active');
+                if (noteModal.classList.contains('active')) {
+                    noteTextarea.focus();
+                }
+            });
+
+            // Save note
+            saveButton.addEventListener('click', function () {
+                localStorage.setItem('quickNote', noteTextarea.value);
+                showNotification('Note saved successfully', 'success');
+            });
+
+            // Close note
+            closeButton.addEventListener('click', function () {
+                noteModal.classList.remove('active');
+            });
+
+            // Auto-save when typing stops
+            let saveTimeout;
+            noteTextarea.addEventListener('input', function () {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    localStorage.setItem('quickNote', noteTextarea.value);
+                }, 1000);
+            });
+
+            // Click outside to close
+            document.addEventListener('click', function (event) {
+                if (!noteModal.contains(event.target) &&
+                    !floatingButton.contains(event.target) &&
+                    noteModal.classList.contains('active')) {
+                    noteModal.classList.remove('active');
+                }
+            });
+
+            // Prevent closing when clicking inside
+            noteModal.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+
+            // Save before unload
+            window.addEventListener('beforeunload', function () {
+                localStorage.setItem('quickNote', noteTextarea.value);
+            });
+        });
+
+        // Các biến và hằng số
+        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 giờ
+        const MAX_TEXT_LENGTH = 10000; // Giới hạn độ dài văn bản
+
+        // Class chính quản lý ứng dụng
+        class LanguageLearningApp {
+            constructor() {
+                this.initializeElements();
+                this.attachEventListeners();
+                this.initializeCache();
+            }
+
+            // Khởi tạo các phần tử DOM
+            initializeElements() {
+                this.editor = document.querySelector('#editor');
+                this.searchBox = document.querySelector('.search-box');
+                this.vocabList = document.querySelector('#vocabList');
+                this.wordAnalysis = document.querySelector('#wordAnalysis');
+                this.saveButton = document.querySelector('.button-group .save');
+                this.clearButton = document.querySelector('.button-group .clear');
+            }
+
+            // Gắn các event listener
+            attachEventListeners() {
+                // Xử lý editor
+                this.editor.addEventListener('paste', this.handlePaste.bind(this));
+                this.editor.addEventListener('input', this.handleEditorInput.bind(this));
+
+                // Xử lý tìm kiếm từ
+                this.searchBox.addEventListener('input',
+                    this.debounce(this.handleSearch.bind(this), 300)
+                );
+
+                // Xử lý các nút
+                this.saveButton.addEventListener('click', this.savePassage.bind(this));
+                this.clearButton.addEventListener('click', this.clearPassage.bind(this));
+            }
+
+            // Xử lý paste vào editor
+            handlePaste(e) {
+                e.preventDefault();
+                const text = e.clipboardData.getData('text/plain');
+                if (text.length > MAX_TEXT_LENGTH) {
+                    this.showNotification('Văn bản quá dài. Vui lòng giảm bớt.');
+                    return;
+                }
+                document.execCommand('insertText', false, text);
+            }
+
+            // Xử lý input trong editor
+            handleEditorInput(e) {
+                this.autoSavePassage();
+            }
+
+            // Xử lý tìm kiếm từ
+            async handleSearch(e) {
+                const searchTerm = e.target.value.trim();
+                if (!searchTerm) {
+                    this.clearWordAnalysis();
+                    return;
+                }
+
+                try {
+                    const wordData = await this.fetchWordData(searchTerm);
+                    this.displayWordAnalysis(wordData);
+                } catch (error) {
+                    this.showError('Không thể tìm từ. Vui lòng thử lại.');
+                }
+            }
+
+            // Fetch dữ liệu từ
+            async fetchWordData(word) {
+                // Kiểm tra cache trước
+                const cached = this.getCachedWord(word);
+                if (cached) return cached;
+
+                try {
+                    const response = await fetch(`/api/word/${word}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+
+                    const data = await response.json();
+                    this.cacheWord(word, data);
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching word:', error);
+                    throw error;
+                }
+            }
+
+            // Hiển thị phân tích từ
+            displayWordAnalysis(wordData) {
+                this.wordAnalysis.style.display = 'block';
+
+                // Hiển thị thông tin cơ bản
+                document.querySelector('#wordBasics').innerHTML = `
+      <h4>Định nghĩa</h4>
+      <p>${wordData.definition}</p>
+    `;
+
+                // Hiển thị phát âm
+                document.querySelector('#pronunciation').innerHTML = `
+      <h4>Phát âm</h4>
+      <p>${wordData.pronunciation}</p>
+      <button onclick="playAudio('${wordData.audioUrl}')">
+        Nghe phát âm
+      </button>
+    `;
+
+                // Hiển thị các dạng của từ
+                document.querySelector('#wordForms').innerHTML = `
+      <h4>Các dạng</h4>
+      <ul>
+        ${wordData.forms.map(form => `<li>${form}</li>`).join('')}
+      </ul>
+    `;
+
+                // Hiển thị ví dụ
+                document.querySelector('#examples').innerHTML = `
+      <h4>Ví dụ</h4>
+      <ul>
+        ${wordData.examples.map(ex => `<li>${ex}</li>`).join('')}
+      </ul>
+    `;
+            }
+
+            // Cache management
+            initializeCache() {
+                this.cleanOldCache();
+            }
+
+            getCachedWord(word) {
+                const cached = localStorage.getItem(`word_${word}`);
+                if (!cached) return null;
+
+                const { data, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp > CACHE_DURATION) {
+                    localStorage.removeItem(`word_${word}`);
+                    return null;
+                }
+                return data;
+            }
+
+            cacheWord(word, data) {
+                const cacheData = {
+                    data,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(`word_${word}`, JSON.stringify(cacheData));
+            }
+
+            cleanOldCache() {
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('word_')) {
+                        const cached = JSON.parse(localStorage.getItem(key));
+                        if (Date.now() - cached.timestamp > CACHE_DURATION) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                });
+            }
+
+            // Passage management
+            savePassage() {
+                const content = this.editor.innerText;
+                const title = document.querySelector('#passageModal .title').value;
+                const description = document.querySelector('#passageModal .description').value;
+
+                const passage = {
+                    content,
+                    title,
+                    description,
+                    timestamp: Date.now()
+                };
+
+                try {
+                    localStorage.setItem('current_passage', JSON.stringify(passage));
+                    this.showNotification('Đã lưu bài đọc thành công');
+                } catch (error) {
+                    this.showError('Không thể lưu bài đọc');
+                }
+            }
+
+            autoSavePassage() {
+                this.debounce(() => this.savePassage(), 2000)();
+            }
+
+            clearPassage() {
+                if (confirm('Bạn có chắc muốn xóa bài đọc hiện tại?')) {
+                    this.editor.innerText = '';
+                    localStorage.removeItem('current_passage');
+                    this.showNotification('Đã xóa bài đọc');
+                }
+            }
+
+            // Utility functions
+            debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            showNotification(message) {
+                // Implement notification system
+                console.log(message);
+            }
+
+            showError(message) {
+                // Implement error display
+                console.error(message);
+            }
+        }
+
+        // Quick Note functionality
+        class QuickNote {
+            constructor() {
+                this.noteButton = document.querySelector('#floating-note-button');
+                this.noteModal = document.querySelector('#note-modal');
+                this.attachEventListeners();
+            }
+
+            attachEventListeners() {
+                this.noteButton.addEventListener('click', () => this.toggleNoteModal());
+
+                // Close modal when clicking outside
+                window.addEventListener('click', (e) => {
+                    if (e.target === this.noteModal) {
+                        this.closeNoteModal();
+                    }
+                });
+            }
+
+            toggleNoteModal() {
+                this.noteModal.style.display =
+                    this.noteModal.style.display === 'none' ? 'block' : 'none';
+            }
+
+            closeNoteModal() {
+                this.noteModal.style.display = 'none';
+            }
+
+            saveNote(content) {
+                const note = {
+                    content,
+                    timestamp: Date.now()
+                };
+
+                try {
+                    const notes = JSON.parse(localStorage.getItem('quick_notes') || '[]');
+                    notes.push(note);
+                    localStorage.setItem('quick_notes', JSON.stringify(notes));
+                    this.showNotification('Đã lưu ghi chú');
+                } catch (error) {
+                    this.showError('Không thể lưu ghi chú');
+                }
+            }
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new LanguageLearningApp();
+            const quickNote = new QuickNote();
+
+            // Service Worker registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed:', error));
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const saveWordBtn = document.querySelector('.button-group button:nth-child(2)');
+            const resetBtn = document.getElementById('resetBtn');
+            const wordAnalysis = document.getElementById('wordAnalysis');
+
+            // Thêm loading spinner
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            saveWordBtn.parentNode.insertBefore(loading, saveWordBtn.nextSibling);
+
+            // Xử lý sự kiện khi click Save Word
+            saveWordBtn.addEventListener('click', function () {
+                loading.style.display = 'block';
+
+                // Giả lập thời gian loading
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    // Thêm logic lưu từ ở đây
+                }, 1000);
+            });
+
+            // Xử lý sự kiện khi click Reset
+            resetBtn.addEventListener('click', function () {
+                // Reset form về trạng thái ban đầu
+                wordAnalysis.style.display = 'none';
+                // Clear các input nếu có
+                document.querySelectorAll('.input-group input').forEach(input => {
+                    input.value = '';
+                });
+            });
+        });
+        // Thêm vào phần <script> của tienganh.html
+        let currentPassageIndex = -1;
+
+        // Kiểm tra xem có đang ở chế độ chỉnh sửa không
+        function checkForEditMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editIndex = urlParams.get('edit');
+            if (editIndex !== null) {
+                currentPassageIndex = parseInt(editIndex);
+                const passages = JSON.parse(localStorage.getItem('passages')) || [];
+                const passage = passages[currentPassageIndex];
+                if (passage) {
+                    document.getElementById('editor').textContent = passage.content;
+                    // Cập nhật thông tin tiêu đề và mô tả nếu có
+                    updatePassageInfo(passage.title, passage.description);
+                }
+            }
+        }
+
+        // Lưu đoạn văn
+        function savePassage() {
+            const content = document.getElementById('editor').textContent;
+            const title = document.getElementById('passageTitle').value || 'Đoạn văn không tên';
+            const description = document.getElementById('passageDescription').value || '';
+
+            const passages = JSON.parse(localStorage.getItem('passages')) || [];
+
+            const passageData = {
+                content: content,
+                title: title,
+                description: description,
+                createdAt: new Date().toLocaleDateString()
+            };
+
+            if (currentPassageIndex >= 0) {
+                // Cập nhật đoạn văn hiện có
+                passages[currentPassageIndex] = passageData;
+            } else {
+                // Thêm đoạn văn mới
+                passages.push(passageData);
+            }
+
+            localStorage.setItem('passages', JSON.stringify(passages));
+            alert('Đã lưu đoạn văn thành công!');
+            window.location.href = 'index.html';
+        }
+
+        // Lưu từ vựng
+        function saveVocabulary(word, definition) {
+            const vocabulary = JSON.parse(localStorage.getItem('vocabulary')) || [];
+            vocabulary.push({
+                word: word,
+                definition: definition,
+                createdAt: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+        }
+
+        // Cập nhật thông tin đoạn văn
+        function updatePassageInfo(title, description) {
+            document.getElementById('passageTitle').value = title || '';
+            document.getElementById('passageDescription').value = description || '';
+        }
+
+        // Xóa nội dung
+        function clearContent() {
+            if (confirm('Bạn có chắc muốn xóa nội dung hiện tại?')) {
+                document.getElementById('editor').textContent = '';
+                document.getElementById('passageTitle').value = '';
+                document.getElementById('passageDescription').value = '';
+            }
+        }
+
+        // Thêm các event listener khi trang được tải
+        document.addEventListener('DOMContentLoaded', function () {
+            checkForEditMode();
+
+            // Thêm event listener cho nút Save
+            document.querySelector('.button-group button:contains("Save")').addEventListener('click', savePassage);
+
+            // Thêm event listener cho nút Clear
+            document.querySelector('.button-group button:contains("Clear")').addEventListener('click', clearContent);
+        });
+        // Thêm đoạn script này vào tienganh.html
+        document.addEventListener('DOMContentLoaded', function() {
+    const currentPassage = JSON.parse(sessionStorage.getItem('currentPassage'));
+    
+    if (currentPassage) {
+        const editor = document.getElementById('editor');
+        if (editor) {
+            editor.innerHTML = currentPassage.content;
+        }
+
+        const passageTitle = document.querySelector('.passage-title');
+        if (passageTitle) {
+            passageTitle.textContent = currentPassage.title;
+        }
+
+        sessionStorage.removeItem('currentPassage');
+    }
+});
+
+    </script>
+</body>
+
+</html>
