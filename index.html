@@ -1,469 +1,1241 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passage Manager</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>EnglishLearn - Học Tiếng Anh Thông Minh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-light: #6789bd;
+            --primary-dark: #345888;
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #ddd;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --success-color: #28a745;
+            --success-hover: #218838;
+            --hover-bg: #f1f5f9;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-            color: #2d3436;
+            background-color: #f5f7fb;
+            color: var(--text-color);
             line-height: 1.6;
         }
 
-        .container {
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 30px;
+            padding: 0 20px;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 0;
-            background: linear-gradient(135deg, #6c5ce7, #a363d9);
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.2);
-        }
-
-        .header h1 {
-            font-size: 3em;
-            color: white;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .add-button {
-            display: inline-flex;
+        .logo {
+            display: flex;
             align-items: center;
-            padding: 15px 30px;
-            background-color: white;
-            color: #6c5ce7;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            gap: 10px;
+            color: var(--primary-color);
         }
 
-        .add-button i {
-            margin-right: 10px;
-            font-size: 1.2em;
+        .logo i {
+            font-size: 28px;
         }
 
-        .add-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            background-color: #f8f9fa;
-        }
-
-        .passage-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .passage-item {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .passage-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(135deg, #6c5ce7, #a363d9);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .passage-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .passage-item:hover::before {
-            opacity: 1;
-        }
-
-        .passage-item h3 {
-            color: #2d3436;
-            font-size: 1.4em;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .passage-item p {
-            color: #636e72;
-            font-size: 1em;
-            margin-bottom: 20px;
-            min-height: 70px;
-            line-height: 1.7;
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
         }
 
         .action-buttons {
             display: flex;
-            gap: 12px;
+            gap: 15px;
         }
 
-        .action-button {
-            flex: 1;
-            padding: 12px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.95em;
             font-weight: 500;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .btn i {
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section Styles */
+        .reading-section,
+        .vocabulary-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .section-header i {
+            font-size: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .tab:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        /* Reading Content */
+        .reading-content,
+        .reading-list {
+            padding: 20px;
+            display: none;
+        }
+
+        .reading-content.active,
+        .reading-list.active {
+            display: block;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+        .reading-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .reading-title-input {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .reading-text {
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            min-height: 200px;
+            white-space: pre-line;
+        }
+
+        .reading-text.editing {
+            border: 1px solid var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+            outline: none;
+        }
+
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .edit-btn {
+            background-color: var(--hover-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .edit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .save-edit-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .save-edit-btn:hover {
+            background-color: var(--success-hover);
+        }
+
+        .cancel-edit-btn {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .cancel-edit-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Reading List */
+        .reading-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .reading-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .reading-item.active {
+            border-left: 4px solid var(--primary-color);
+            background-color: var(--hover-bg);
+        }
+
+        .reading-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .reading-item-title {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .reading-item-date {
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .delete-reading-item {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            padding: 5px;
+            transition: var(--transition);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
         }
 
-        .action-button i {
-            margin-right: 8px;
+        .delete-reading-item:hover {
+            color: var(--danger-color);
+            background-color: rgba(220, 53, 69, 0.1);
         }
 
-        .open-button {
-            background-color: #6c5ce7;
-            color: white;
+        /* Vocabulary Section */
+        .vocabulary-container {
+            padding: 20px;
         }
 
-        .edit-button {
-            background-color: #00b894;
-            color: white;
+        .vocabulary-item {
+            display: flex;
+            margin-bottom: 15px;
+            background-color: var(--secondary-color);
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
         }
 
-        .delete-button {
-            background-color: #ff7675;
-            color: white;
+        .vocabulary-item input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            transition: var(--transition);
         }
 
-        .action-button:hover {
-            transform: translateY(-2px);
-            filter: brightness(110%);
+        .vocabulary-item input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
         }
 
+        .remove-vocab-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            padding: 5px;
+            transition: var(--transition);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-vocab-btn:hover {
+            color: var(--danger-color);
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .add-vocab-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            background-color: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .add-vocab-btn:hover {
+            background-color: var(--hover-bg);
+            border-color: var(--primary-color);
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
-            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
         }
 
         .modal-content {
             background-color: white;
+            border-radius: 10px;
             width: 90%;
             max-width: 600px;
-            margin: 50px auto;
-            padding: 40px;
-            border-radius: 20px;
-            position: relative;
-            animation: slideIn 0.4s ease;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
         }
 
-        .input-group {
-            margin-bottom: 25px;
+        .modal.active .modal-content {
+            transform: translateY(0);
         }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #2d3436;
-            font-weight: 500;
-            font-size: 1.1em;
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: #6c5ce7;
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
-        }
-
-        .save-button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #6c5ce7, #a363d9);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .save-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            color: #636e72;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .empty-state i {
-            font-size: 4em;
-            color: #6c5ce7;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #2d3436;
-        }
-
-        .close {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            font-size: 24px;
-            color: #636e72;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 40px;
-            height: 40px;
+        .modal-header h2 {
             display: flex;
             align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        textarea#newReadingText {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            resize: vertical;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        input#newReadingTitle {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .cancel-btn {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .cancel-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .save-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Confirm Modal */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
             justify-content: center;
-            border-radius: 50%;
-            background: #f8f9fa;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .close:hover {
-            background: #e0e0e0;
-            transform: rotate(90deg);
+        .confirm-modal.active {
+            opacity: 1;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .confirm-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-70px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .confirm-modal.active .confirm-content {
+            transform: translateY(0);
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
+        .confirm-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-            .header {
-                padding: 30px 15px;
-                margin-bottom: 30px;
-            }
+        .confirm-header i {
+            color: var(--danger-color);
+            font-size: 20px;
+        }
 
-            .header h1 {
-                font-size: 2em;
-            }
+        .confirm-header h3 {
+            color: var(--text-color);
+            font-size: 18px;
+        }
 
-            .passage-list {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+        .confirm-body {
+            padding: 20px;
+        }
 
-            .modal-content {
-                width: 95%;
-                padding: 25px;
-                margin: 10px auto;
-            }
+        .confirm-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Passage Manager</h1>
-            <button onclick="openModal()" class="add-button">
-                <i class="fas fa-plus"></i> Add New Passage
-            </button>
-        </div>
-
-        <div id="passageList" class="passage-list">
-            <!-- Passages will be displayed here -->
-        </div>
-
-        <div id="passageModal" class="modal">
-            <div class="modal-content">
-                <i class="fas fa-times close" onclick="closeModal()"></i>
-                <h2 style="margin-bottom: 20px;">Passage Information</h2>
-                <div class="input-group">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" placeholder="Enter passage title" required>
-                </div>
-                <div class="input-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" rows="4" placeholder="Enter passage description" required></textarea>
-                </div>
-                <button onclick="savePassage()" class="save-button">
-                    <i class="fas fa-save"></i> Save Passage
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-book-reader"></i>
+                <h1>EnglishLearn</h1>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="createReading">
+                    <i class="fas fa-plus"></i>
+                    Tạo Bài Đọc Mới
                 </button>
+                <button class="btn btn-danger" id="deleteReading" style="display: none;">
+                    <i class="fas fa-trash-alt"></i>
+                    Xóa Bài Đọc
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="content">
+            <div class="reading-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> Bài Đọc</h2>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" id="readingContentTab">Nội Dung Bài Đọc</div>
+                    <div class="tab" id="readingListTab">Danh Sách</div>
+                </div>
+
+                <div id="readingContent" class="reading-content active">
+                    <div id="emptyReading" class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <h3>Chưa có bài đọc nào</h3>
+                        <p>Nhấn vào nút "Tạo Bài Đọc Mới" để bắt đầu học tiếng Anh.</p>
+                    </div>
+
+                    <div id="readingDisplay" style="display: none;">
+                        <div class="reading-title">
+                            <span id="readingTitle"></span>
+                        </div>
+                        <div id="readingText" class="reading-text" contenteditable="false"></div>
+
+                        <div class="edit-buttons">
+                            <button id="editReadingBtn" class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i> Chỉnh Sửa
+                            </button>
+                            <button id="saveEditBtn" class="action-btn save-edit-btn" style="display: none;">
+                                <i class="fas fa-save"></i> Lưu
+                            </button>
+                            <button id="cancelEditBtn" class="action-btn cancel-edit-btn" style="display: none;">
+                                <i class="fas fa-times"></i> Hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="readingList" class="reading-list">
+                    <div id="emptyList" class="empty-state">
+                        <i class="fas fa-list"></i>
+                        <h3>Danh sách trống</h3>
+                        <p>Chưa có bài đọc nào được thêm vào.</p>
+                    </div>
+                    <div id="readingItems"></div>
+                </div>
+            </div>
+
+            <div class="vocabulary-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-language"></i> Từ Vựng</h2>
+                </div>
+
+                <div class="vocabulary-container">
+                    <div id="emptyVocab" class="empty-state">
+                        <i class="fas fa-book-open"></i>
+                        <h3>Chưa có từ vựng nào</h3>
+                        <p>Chọn một bài đọc và thêm từ vựng để học hiệu quả.</p>
+                    </div>
+
+                    <div id="vocabularyItems"></div>
+                    <button class="add-vocab-btn" id="addVocab">
+                        <i class="fas fa-plus"></i> Thêm Từ Vựng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="readingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Tạo Bài Đọc Mới</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newReadingTitle" placeholder="Nhập tiêu đề bài đọc...">
+                <textarea id="newReadingText" placeholder="Nhập nội dung bài đọc tiếng Anh ở đây..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="cancelReading">Hủy</button>
+                <button class="modal-btn save-btn" id="saveReading">Lưu Bài Đọc</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-content">
+            <div class="confirm-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Xác nhận xóa</h3>
+            </div>
+            <div class="confirm-body">
+                <p>Bạn có chắc chắn muốn xóa bài đọc này? Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="confirm-footer">
+                <button class="modal-btn cancel-btn" id="cancelDelete">Hủy</button>
+                <button class="modal-btn save-btn" id="confirmDelete"
+                    style="background-color: var(--danger-color);">Xóa</button>
             </div>
         </div>
     </div>
 
     <script>
-        let passages = JSON.parse(localStorage.getItem('passages')) || [];
-        let currentEditId = null;
-        const DEFAULT_CONTENT = "hãy thêm đoạn văn tiếng anh ở đây";
+        // Lưu trữ dữ liệu
+        let readings = JSON.parse(localStorage.getItem('readings')) || [];
+        let currentReadingIndex = -1;
+        let originalText = ''; // Lưu nội dung gốc khi chỉnh sửa
+        let originalTitle = ''; // Lưu tiêu đề gốc khi chỉnh sửa
+        let readingToDelete = -1; // Lưu chỉ số bài đọc cần xóa
 
-        function openModal(id = null) {
-            currentEditId = id;
-            document.getElementById('passageModal').style.display = 'block';
-            if (id) {
-                const passage = passages.find(p => p.id === id);
-                if (passage) {
-                    document.getElementById('title').value = passage.title;
-                    document.getElementById('description').value = passage.description;
+        // Các phần tử DOM
+        const createReadingBtn = document.getElementById('createReading');
+        const deleteReadingBtn = document.getElementById('deleteReading');
+        const readingModal = document.getElementById('readingModal');
+        const confirmModal = document.getElementById('confirmModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const newReadingText = document.getElementById('newReadingText');
+        const newReadingTitle = document.getElementById('newReadingTitle');
+        const saveReadingBtn = document.getElementById('saveReading');
+        const cancelReadingBtn = document.getElementById('cancelReading');
+        const readingTitle = document.getElementById('readingTitle');
+        const readingText = document.getElementById('readingText');
+        const readingItems = document.getElementById('readingItems');
+        const vocabularyItems = document.getElementById('vocabularyItems');
+        const addVocabBtn = document.getElementById('addVocab');
+        const readingContentTab = document.getElementById('readingContentTab');
+        const readingListTab = document.getElementById('readingListTab');
+        const readingContent = document.getElementById('readingContent');
+        const readingList = document.getElementById('readingList');
+        const emptyReading = document.getElementById('emptyReading');
+        const readingDisplay = document.getElementById('readingDisplay');
+        const emptyList = document.getElementById('emptyList');
+        const emptyVocab = document.getElementById('emptyVocab');
+        const editReadingBtn = document.getElementById('editReadingBtn');
+        const saveEditBtn = document.getElementById('saveEditBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDelete');
+        const confirmDeleteBtn = document.getElementById('confirmDelete');
+        const titleInput = document.getElementById('titleInput');
+        const titleDisplay = document.getElementById('titleDisplay');
+        const editTitleBtn = document.getElementById('editTitleBtn');
+        const saveTitleBtn = document.getElementById('saveTitleBtn');
+        const cancelTitleBtn = document.getElementById('cancelTitleBtn');
+
+        // Xử lý tab
+        readingContentTab.addEventListener('click', () => {
+            readingContentTab.classList.add('active');
+            readingListTab.classList.remove('active');
+            readingContent.classList.add('active');
+            readingList.classList.remove('active');
+        });
+
+        readingListTab.addEventListener('click', () => {
+            readingListTab.classList.add('active');
+            readingContentTab.classList.remove('active');
+            readingList.classList.add('active');
+            readingContent.classList.remove('active');
+            displayReadingList();
+        });
+
+        // Mở modal tạo bài đọc mới
+        createReadingBtn.addEventListener('click', () => {
+            newReadingTitle.value = '';
+            newReadingText.value = '';
+            readingModal.style.display = 'flex';
+            setTimeout(() => {
+                readingModal.classList.add('active');
+                newReadingTitle.focus();
+            }, 10);
+        });
+
+        // Xóa bài đọc hiện tại
+        deleteReadingBtn.addEventListener('click', () => {
+            if (currentReadingIndex >= 0) {
+                readingToDelete = currentReadingIndex;
+                confirmModal.style.display = 'flex';
+                setTimeout(() => {
+                    confirmModal.classList.add('active');
+                }, 10);
+            }
+        });
+
+        // Xác nhận xóa bài đọc
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (readingToDelete >= 0) {
+                readings.splice(readingToDelete, 1);
+                localStorage.setItem('readings', JSON.stringify(readings));
+                closeConfirmModal();
+
+                if (readings.length > 0) {
+                    currentReadingIndex = 0;
+                    displayReading(currentReadingIndex);
+                    deleteReadingBtn.style.display = 'inline-flex';
+                } else {
+                    currentReadingIndex = -1;
+                    emptyReading.style.display = 'flex';
+                    readingDisplay.style.display = 'none';
+                    emptyVocab.style.display = 'flex';
+                    deleteReadingBtn.style.display = 'none';
                 }
+
+                displayReadingList();
             }
+        });
+
+        // Hủy xóa bài đọc
+        cancelDeleteBtn.addEventListener('click', closeConfirmModal);
+
+        // Đóng modal xác nhận
+        function closeConfirmModal() {
+            confirmModal.classList.remove('active');
+            setTimeout(() => {
+                confirmModal.style.display = 'none';
+            }, 300);
+            readingToDelete = -1;
         }
 
+        // Đóng modal
         function closeModal() {
-            document.getElementById('passageModal').style.display = 'none';
-            document.getElementById('title').value = '';
-            document.getElementById('description').value = '';
-            currentEditId = null;
+            readingModal.classList.remove('active');
+            setTimeout(() => {
+                readingModal.style.display = 'none';
+            }, 300);
         }
 
-        function savePassage() {
-            const title = document.getElementById('title').value.trim();
-            const description = document.getElementById('description').value.trim();
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelReadingBtn.addEventListener('click', closeModal);
 
-            if (!title || !description) {
-                alert('Please fill in all fields');
-                return;
+        // Lưu bài đọc mới
+        saveReadingBtn.addEventListener('click', () => {
+            const title = newReadingTitle.value.trim();
+            const text = newReadingText.value.trim();
+
+            if (text) {
+                const now = new Date();
+                const reading = {
+                    title: title || `Bài đọc - ${now.toLocaleDateString()}`,
+                    text,
+                    vocabulary: [],
+                    date: now.toISOString()
+                };
+                readings.push(reading);
+                localStorage.setItem('readings', JSON.stringify(readings));
+                closeModal();
+                currentReadingIndex = readings.length - 1;
+                displayReading(currentReadingIndex);
+                displayReadingList();
+
+                // Hiển thị nút xóa khi có bài đọc
+                deleteReadingBtn.style.display = 'inline-flex';
             }
+        });
 
-            const passage = {
-                id: currentEditId || Date.now(),
-                title: title,
-                description: description,
-                content: DEFAULT_CONTENT
+        // Thêm từ vựng
+        addVocabBtn.addEventListener('click', () => {
+            if (currentReadingIndex >= 0) {
+                emptyVocab.style.display = 'none';
+                addVocabularyItem();
+            }
+        });
+
+        // Hàm tạo một mục từ vựng mới
+        function addVocabularyItem(eng = '', viet = '') {
+            const vocabItem = document.createElement('div');
+            vocabItem.className = 'vocabulary-item';
+            vocabItem.innerHTML = `
+        <div style="display: flex; flex: 1; gap: 10px; align-items: center;">
+            <input type="text" value="${escapeHTML(eng)}" placeholder="Từ tiếng Anh" class="eng-word">
+            <input type="text" value="${escapeHTML(viet)}" placeholder="Nghĩa tiếng Việt" class="viet-word">
+            <button class="remove-vocab-btn" title="Xóa từ vựng này">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+            vocabularyItems.appendChild(vocabItem);
+
+            // Lưu từ vựng khi người dùng nhập
+            const engInput = vocabItem.querySelector('.eng-word');
+            const vietInput = vocabItem.querySelector('.viet-word');
+            const removeBtn = vocabItem.querySelector('.remove-vocab-btn');
+
+            const saveVocab = () => {
+                const eng = engInput.value.trim();
+                const viet = vietInput.value.trim();
+                const vocabIndex = Array.from(vocabularyItems.children).indexOf(vocabItem);
+
+                if (eng && viet) {
+                    if (vocabIndex >= 0 && vocabIndex < readings[currentReadingIndex].vocabulary.length) {
+                        readings[currentReadingIndex].vocabulary[vocabIndex] = { eng, viet };
+                    } else {
+                        readings[currentReadingIndex].vocabulary.push({ eng, viet });
+                    }
+                    localStorage.setItem('readings', JSON.stringify(readings));
+                }
             };
 
-            if (currentEditId) {
-                passages = passages.map(p => p.id === currentEditId ? passage : p);
-            } else {
-                passages.push(passage);
-            }
+            // Xóa từ vựng
+            removeBtn.addEventListener('click', () => {
+                const vocabIndex = Array.from(vocabularyItems.children).indexOf(vocabItem);
+                if (vocabIndex >= 0 && vocabIndex < readings[currentReadingIndex].vocabulary.length) {
+                    readings[currentReadingIndex].vocabulary.splice(vocabIndex, 1);
+                    localStorage.setItem('readings', JSON.stringify(readings));
+                }
+                vocabItem.remove();
 
-            localStorage.setItem('passages', JSON.stringify(passages));
-            closeModal();
-            displayPassages();
-        }
-
-        function displayPassages() {
-            const passageList = document.getElementById('passageList');
-            
-            if (passages.length === 0) {
-                passageList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-book" style="font-size: 3em; margin-bottom: 15px; color: #ddd;"></i>
-                        <h3>No passages yet</h3>
-                        <p>Click the "Add New Passage" button to create your first passage.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            passageList.innerHTML = '';
-            passages.forEach(passage => {
-                const passageElement = document.createElement('div');
-                passageElement.className = 'passage-item';
-                passageElement.innerHTML = `
-                    <h3>${passage.title}</h3>
-                    <p>${passage.description}</p>
-                    <div class="action-buttons">
-                        <button onclick="openPassageInReader(${passage.id})" class="action-button open-button">
-                            <i class="fas fa-book-reader"></i> Read
-                        </button>
-                        <button onclick="event.stopPropagation(); openModal(${passage.id})" class="action-button edit-button">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button onclick="event.stopPropagation(); deletePassage(${passage.id})" class="action-button delete-button">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                `;
-                passageList.appendChild(passageElement);
+                // Hiển thị trạng thái trống nếu không còn từ vựng
+                if (vocabularyItems.children.length === 0) {
+                    emptyVocab.style.display = 'flex';
+                }
             });
-        }
 
-        function openPassageInReader(id) {
-            const passage = passages.find(p => p.id === id);
-            if (passage) {
-                sessionStorage.setItem('currentPassage', JSON.stringify(passage));
-                window.open('tienganh.html', '_blank');
+            engInput.addEventListener('blur', saveVocab);
+            vietInput.addEventListener('blur', saveVocab);
+
+            // Focus vào input đầu tiên nếu là từ vựng mới
+            if (!eng && !viet) {
+                engInput.focus();
             }
         }
 
-        function deletePassage(id) {
-            if (confirm('Are you sure you want to delete this passage?')) {
-                passages = passages.filter(p => p.id !== id);
-                localStorage.setItem('passages', JSON.stringify(passages));
-                displayPassages();
+        // Chỉnh sửa tiêu đề
+        function enableTitleEdit() {
+            if (currentReadingIndex >= 0) {
+                originalTitle = readingTitle.innerText;
+                readingTitle.innerHTML = `
+            <input type="text" class="reading-title-input" id="titleInput" value="${escapeHTML(originalTitle)}">
+            <div class="edit-buttons">
+                <button id="saveTitleBtn" class="action-btn save-edit-btn">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+                <button id="cancelTitleBtn" class="action-btn cancel-edit-btn">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+            </div>
+        `;
+
+                document.getElementById('titleInput').focus();
+
+                // Xử lý các sự kiện cho nút lưu và hủy
+                document.getElementById('saveTitleBtn').addEventListener('click', saveTitle);
+                document.getElementById('cancelTitleBtn').addEventListener('click', cancelTitleEdit);
+
+                // Xử lý phím Enter để lưu
+                document.getElementById('titleInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        saveTitle();
+                    }
+                    if (e.key === 'Escape') {
+                        cancelTitleEdit();
+                    }
+                });
             }
         }
 
-        // Handle modal close when clicking outside
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('passageModal')) {
+        // Lưu tiêu đề mới
+        function saveTitle() {
+            const titleInput = document.getElementById('titleInput');
+            const newTitle = titleInput.value.trim();
+
+            if (newTitle && currentReadingIndex >= 0) {
+                readings[currentReadingIndex].title = newTitle;
+                localStorage.setItem('readings', JSON.stringify(readings));
+                readingTitle.innerText = newTitle;
+
+                // Cập nhật danh sách nếu đang mở
+                if (readingList.classList.contains('active')) {
+                    displayReadingList();
+                }
+            } else {
+                cancelTitleEdit();
+            }
+        }
+
+        // Hủy chỉnh sửa tiêu đề
+        function cancelTitleEdit() {
+            if (currentReadingIndex >= 0) {
+                readingTitle.innerText = originalTitle;
+            }
+        }
+
+        // Chỉnh sửa bài đọc
+        editReadingBtn.addEventListener('click', () => {
+            if (currentReadingIndex >= 0) {
+                originalText = readingText.textContent;
+                readingText.setAttribute('contenteditable', 'true');
+                readingText.focus();
+                readingText.classList.add('editing');
+                editReadingBtn.style.display = 'none';
+                saveEditBtn.style.display = 'inline-flex';
+                cancelEditBtn.style.display = 'inline-flex';
+            }
+        });
+
+        // Lưu chỉnh sửa bài đọc
+        saveEditBtn.addEventListener('click', () => {
+            const newText = readingText.textContent.trim();
+            if (newText && currentReadingIndex >= 0) {
+                readings[currentReadingIndex].text = newText;
+                localStorage.setItem('readings', JSON.stringify(readings));
+                exitEditMode();
+
+                // Cập nhật danh sách nếu đang mở
+                if (readingList.classList.contains('active')) {
+                    displayReadingList();
+                }
+            }
+        });
+
+        // Hủy chỉnh sửa
+        cancelEditBtn.addEventListener('click', () => {
+            if (currentReadingIndex >= 0) {
+                readingText.textContent = originalText;
+                exitEditMode();
+            }
+        });
+
+        // Thoát khỏi chế độ chỉnh sửa
+        function exitEditMode() {
+            readingText.setAttribute('contenteditable', 'false');
+            readingText.classList.remove('editing');
+            editReadingBtn.style.display = 'inline-flex';
+            saveEditBtn.style.display = 'none';
+            cancelEditBtn.style.display = 'none';
+        }
+
+        // Hiển thị bài đọc
+        function displayReading(index) {
+            if (index >= 0 && index < readings.length) {
+                const reading = readings[index];
+
+                // Hiển thị bài đọc
+                emptyReading.style.display = 'none';
+                readingDisplay.style.display = 'block';
+
+                // Hiển thị tiêu đề với khả năng chỉnh sửa
+                readingTitle.innerHTML = `
+            <span id="titleDisplay">${escapeHTML(reading.title)}</span>
+            <button id="editTitleBtn" class="action-btn edit-btn" style="margin-left: 10px; padding: 2px 8px;">
+                <i class="fas fa-edit"></i>
+            </button>
+        `;
+
+                // Thêm sự kiện cho nút chỉnh sửa tiêu đề
+                document.getElementById('editTitleBtn').addEventListener('click', enableTitleEdit);
+
+                readingText.textContent = reading.text;
+
+                // Hiển thị nút xóa bài đọc
+                deleteReadingBtn.style.display = 'inline-flex';
+
+                // Hiển thị từ vựng
+                vocabularyItems.innerHTML = '';
+                if (reading.vocabulary && reading.vocabulary.length > 0) {
+                    emptyVocab.style.display = 'none';
+                    reading.vocabulary.forEach(vocab => {
+                        addVocabularyItem(vocab.eng, vocab.viet);
+                    });
+                } else {
+                    emptyVocab.style.display = 'flex';
+                }
+
+                // Đánh dấu mục đang active trong danh sách
+                const listItems = document.querySelectorAll('.reading-item');
+                listItems.forEach((item, i) => {
+                    if (i === index) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // Chuyển sang tab bài đọc
+                readingContentTab.click();
+            }
+        }
+
+        // Hiển thị danh sách bài đọc
+        function displayReadingList() {
+            readingItems.innerHTML = '';
+            if (readings.length > 0) {
+                emptyList.style.display = 'none';
+                readings.forEach((reading, index) => {
+                    const date = new Date(reading.date);
+                    const item = document.createElement('div');
+                    item.className = 'reading-item';
+                    if (index === currentReadingIndex) {
+                        item.classList.add('active');
+                    }
+
+                    item.innerHTML = `
+                <div class="reading-item-info">
+                    <div class="reading-item-title">${escapeHTML(reading.title)}</div>
+                    <div class="reading-item-date"><i class="far fa-calendar-alt"></i> ${date.toLocaleDateString()}</div>
+                </div>
+                <button class="delete-reading-item" title="Xóa bài đọc này">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+
+                    // Xử lý click vào item để hiển thị bài đọc
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.closest('.delete-reading-item')) {
+                            currentReadingIndex = index;
+                            displayReading(index);
+                        }
+                    });
+
+                    // Xử lý nút xóa từng bài đọc trong danh sách
+                    const deleteItemBtn = item.querySelector('.delete-reading-item');
+                    deleteItemBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        readingToDelete = index;
+                        confirmModal.style.display = 'flex';
+                        setTimeout(() => {
+                            confirmModal.classList.add('active');
+                        }, 10);
+                    });
+
+                    readingItems.appendChild(item);
+                });
+            } else {
+                emptyList.style.display = 'flex';
+            }
+        }
+
+        // Escape HTML để ngăn XSS
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag]));
+        }
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', () => {
+            if (readings.length > 0) {
+                currentReadingIndex = 0;
+                displayReading(currentReadingIndex);
+                deleteReadingBtn.style.display = 'inline-flex';
+            } else {
+                emptyReading.style.display = 'flex';
+                readingDisplay.style.display = 'none';
+                emptyVocab.style.display = 'flex';
+                deleteReadingBtn.style.display = 'none';
+            }
+        });
+
+        // Đóng modal khi click bên ngoài
+        window.addEventListener('click', (e) => {
+            if (e.target === readingModal) {
                 closeModal();
             }
-        }
+            if (e.target === confirmModal) {
+                closeConfirmModal();
+            }
+        });
 
-        // Initial display of passages
-        displayPassages();
+        // Xử lý phím tắt
+        document.addEventListener('keydown', (e) => {
+            // Escape để đóng modal
+            if (e.key === 'Escape') {
+                if (readingModal.classList.contains('active')) {
+                    closeModal();
+                }
+                if (confirmModal.classList.contains('active')) {
+                    closeConfirmModal();
+                }
+            }
+
+            // Enter để lưu trong modal tạo bài đọc
+            if (e.key === 'Enter' && e.ctrlKey && readingModal.classList.contains('active')) {
+                saveReadingBtn.click();
+            }
+        });
     </script>
 </body>
+
 </html>
