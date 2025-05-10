@@ -4,7 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnglishLearn - Học Tiếng Anh Thông Minh</title>
+    <!-- Thẻ meta cơ bản -->
+    <meta property="og:title" content="EnglishLearn - Học Tiếng Anh Cùng ChongHzChongHz" />
+    <meta property="og:description"
+        content="Công cụ học tiếng Anh miễn phí giúp bạn tạo và lưu trữ bài đọc, từ vựng và theo dõi tiến trình học tập của mình một cách hiệu quả." />
+    <meta property="og:image" content="https://tronghz.github.io/hoctienganh/avatar.jpg" />
+    <meta property="og:url" content="https://tronghz.github.io/hoctienganh/" />
+    <meta property="og:type" content="website" />
+    <title>EnglishLearn Chonghz</title>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -631,10 +639,36 @@
             justify-content: flex-end;
             gap: 10px;
         }
+
+        /* Thêm watermark */
+        body::before {
+            content: "75+ TSA";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 190px;
+            font-weight: bold;
+            color: rgba(255, 0, 0, 0.15);
+            /* Màu đỏ với độ mờ 15% */
+            transform: rotate(-30deg);
+            pointer-events: none;
+            /* Cho phép các sự kiện click xuyên qua watermark */
+            z-index: -1;
+            /* Đảm bảo watermark nằm dưới nội dung */
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 
 <body>
+
     <header>
         <div class="header-content">
             <div class="logo">
@@ -644,11 +678,11 @@
             <div class="action-buttons">
                 <button class="btn btn-primary" id="createReading">
                     <i class="fas fa-plus"></i>
-                    Tạo Bài Đọc Mới
+                    Add Passage
                 </button>
                 <button class="btn btn-danger" id="deleteReading" style="display: none;">
                     <i class="fas fa-trash-alt"></i>
-                    Xóa Bài Đọc
+                    Remove Passage
                 </button>
             </div>
         </div>
