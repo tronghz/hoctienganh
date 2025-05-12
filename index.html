@@ -662,45 +662,54 @@
             justify-content: flex-end;
             gap: 10px;
         }
+
         /* Add these styles to make each section independently scrollable */
-.reading-section,
-.vocabulary-section {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 80vh; /* Set a fixed height for the sections */
-}
+        .reading-section,
+        .vocabulary-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            /* Set a fixed height for the sections */
+        }
 
-.reading-content.active,
-.reading-list.active {
-    display: block;
-    overflow-y: auto; /* Enable vertical scrolling */
-    flex: 1; /* Take remaining space */
-}
+        .reading-content.active,
+        .reading-list.active {
+            display: block;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            flex: 1;
+            /* Take remaining space */
+        }
 
-.vocabulary-container {
-    padding: 20px;
-    overflow-y: auto; /* Enable vertical scrolling */
-    flex: 1; /* Take remaining space */
-    max-height: calc(80vh - 53px); /* Subtract header height */
-}
+        .vocabulary-container {
+            padding: 20px;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            flex: 1;
+            /* Take remaining space */
+            max-height: calc(80vh - 53px);
+            /* Subtract header height */
+        }
 
-/* Make reading text area scrollable without affecting the whole section */
-.reading-text {
-    padding: 15px;
-    background-color: var(--secondary-color);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 20px;
-    line-height: 1.8;
-    min-height: 200px;
-    max-height: 45vh; /* Limit max height */
-    overflow-y: auto; /* Enable scrolling for long texts */
-    white-space: pre-line;
-}
+        /* Make reading text area scrollable without affecting the whole section */
+        .reading-text {
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            min-height: 200px;
+            max-height: 45vh;
+            /* Limit max height */
+            overflow-y: auto;
+            /* Enable scrolling for long texts */
+            white-space: pre-line;
+        }
     </style>
 </head>
 
@@ -1065,6 +1074,11 @@
             if (readingToDelete >= 0) {
                 readings.splice(readingToDelete, 1);
                 localStorage.setItem('readings', JSON.stringify(readings));
+
+                // Xóa index đã lưu nếu không còn bài đọc
+                if (readings.length === 0) {
+                    localStorage.removeItem('currentReadingIndex');
+                }
                 closeConfirmModal();
 
                 if (readings.length > 0) {
@@ -1450,6 +1464,7 @@
 
                 // Chuyển sang tab bài đọc
                 readingContentTab.click();
+                localStorage.setItem('currentReadingIndex', index);
             }
         }
 
@@ -1841,7 +1856,7 @@
                     // Xử lý sự kiện khi phát âm kết thúc
                     utterance.onend = () => {
                         document.body.removeChild(playingEffect);
-                       
+
                     };
 
                     // Phát âm
@@ -1856,8 +1871,12 @@
 
         // Khởi tạo
         document.addEventListener('DOMContentLoaded', () => {
+            const savedIndex = localStorage.getItem('currentReadingIndex');
+
             if (readings.length > 0) {
-                currentReadingIndex = 0;
+                // Ưu tiên index đã lưu, nếu không có thì dùng index đầu tiên
+                currentReadingIndex = savedIndex !== null ? parseInt(savedIndex) : 0;
+
                 displayReading(currentReadingIndex);
                 deleteReadingBtn.style.display = 'inline-flex';
             } else {
